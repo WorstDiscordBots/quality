@@ -13,7 +13,9 @@ from datetime import timedelta # quality errors
 
 import config # our config
 
-bot = commands.Bot(command_prefix=[":star:", "quality ", ":star: "], case_insensitive=True, owner_id=356091260429402122) # Quality Prefix
+bot = commands.Bot(command_prefix=["⭐", "quality "], case_insensitive=True, owner_id=356091260429402122) # Quality Prefix
+
+bot.remove_command("help") # we make a quality help later
 
 @bot.event
 async def on_ready(): # the bot has initalized and is ready for making quality
@@ -74,5 +76,17 @@ async def die(ctx):
     await ctx.send("On my way! Bye quality world...")
     await bot.session.close()
     await bot.logout()
+
+@commands.cooldown(1, 60, commands.BucketType.channel)
+@bot.command()
+async def help(ctx, *,command: str=None):
+    if command:
+        command = bot.get_command(command)
+        if not command:
+            return await ctx.send("Provide a real quality command name pls")
+        desc = command.description or ""
+        await ctx.send(f"Quality help on **{command.qualified_name}**:\n{desc}\n{command.signature}")
+    else:
+        await ctx.send(f"**Quality commands available**\n{', '.join([cmd.qualified_name for cmd in bot.commands])}")
 
 bot.run(config.token)
