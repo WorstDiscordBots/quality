@@ -24,6 +24,8 @@ async def on_ready(): # the bot has initalized and is ready for making quality
 async def on_command_error(ctx, error): # handlers for our quality errors
     if isinstance(error, commands.CommandOnCooldown):
         await ctx.send(f"You are on cooldown. Try again in {timedelta(seconds=int(error.retry_after))}.")
+    elif isinstance(error, (commands.CommandNotFound, commands.NotOwner)):
+        pass
     else:
         print('In {}:'.format(ctx.command.qualified_name), file=sys.stderr)
         traceback.print_tb(error.original.__traceback__)
@@ -39,7 +41,11 @@ async def ping(ctx):
         await ctx.send(f"Quality is delayed by {bot.latency * 1000}ms today, sorry")
 
 def qualitize(avy):
-    url = QRCode('http://quality.com',error = 'H')
+    urls = ["http://www.feedmusic.com/", "https://crypton.trading/", "http://www.etq-amsterdam.com/", "http://www.mikiyakobayashi.com/", \
+            "https://insideabbeyroad.withgoogle.com/en", "https://www.thenewmobileworkforce.com/", "http://education.iceandsky.com/", \
+            "https://getbeagle.co/", "https://www.southwestheartoftravel.com/", "http://wovenmagazine.com/", "http://www.johos.at/", \
+            "https://www.nowness.com/", "https://www.virginamerica.com/", "http://www.world-of-swiss.com/en", "http://reductress.com/"]
+    url = QRCode(random.choice(urls), error='H')
     url.png('test.png', scale=10)
     with Image.open('test.png').convert("RGBA") as im:
         box = (135, 135, 235, 235)
